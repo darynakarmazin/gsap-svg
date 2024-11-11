@@ -1,0 +1,245 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // Змінна для зберігання анімації пульсації
+    let pulseTween;
+
+    const startPulseAnimation = () => {
+      if (!pulseTween || !pulseTween.isActive()) {
+        // Створюємо пульсуючу анімацію тільки, якщо вона не активна
+        pulseTween = gsap.fromTo(
+          "#first-trigger",
+          { scale: 1, opacity: 1 },
+          {
+            scale: 1.2,
+            opacity: 0.7,
+            duration: 0.6,
+            yoyo: true,
+            repeat: -1,
+            ease: "power1.inOut",
+            id: "pulse",
+          }
+        );
+      }
+    };
+
+    // Викликаємо анімацію один раз на старті
+    startPulseAnimation();
+
+    const trigger = document.querySelector("#first-trigger");
+    const background = document.getElementById("whole-svg");
+    const infoBox = document.getElementById("info-box");
+    const closeInfoBoxBtn = document.querySelector(".close-info-box");
+
+    //   const showInfoBox = () => {
+    //     gsap.set(infoBox, { scale: 0, rotation: 360, opacity: 0 });
+    //     gsap.to(infoBox, {
+    //       scale: 1,
+    //       rotation: 0,
+    //       opacity: 1,
+    //       duration: 0.6,
+    //       ease: "back.out(1.7)",
+    //       visibility: "visible",
+    //       onStart: () => {
+    //         infoBox.style.pointerEvents = "auto";
+    //       },
+    //     });
+    //   };
+
+    //   // Закриття інформаційного блоку з анімацією
+    //   closeInfoBoxBtn.addEventListener("click", () => {
+    //     gsap.to(infoBox, {
+    //       scale: 0,
+    //       rotation: -360,
+    //       opacity: 0,
+    //       duration: 0.5,
+    //       ease: "power1.in",
+    //       onComplete: () => {
+    //         gsap.set(infoBox, { visibility: "hidden" });
+    //       },
+    //     });
+    //   });
+
+    const showInfoBox = () => {
+      gsap.set(infoBox, { opacity: 0 });
+      gsap.to(infoBox, {
+        opacity: 1,
+        duration: 0.6,
+        ease: "power1.out",
+        visibility: "visible",
+        onStart: () => {
+          infoBox.style.pointerEvents = "auto";
+          // Показуємо оверлей
+          //         gsap.to(overlay, {
+          //           opacity: 1,
+          //           visibility: "visible",
+          //           duration: 0.3,
+          //         });
+        },
+      });
+    };
+
+    // Закриття інформаційного блоку з анімацією
+    closeInfoBoxBtn.addEventListener("click", () => {
+      gsap.to(infoBox, {
+        opacity: 0,
+        duration: 0.5,
+        ease: "power1.in",
+        onComplete: () => {
+          gsap.set(infoBox, { visibility: "hidden" });
+          // Сховуємо оверлей
+          //         gsap.to(overlay, {
+          //           opacity: 0,
+          //           visibility: "hidden",
+          //           duration: 0.3,
+          //         });
+        },
+      });
+    });
+
+    // Основна анімація
+    trigger.addEventListener("click", () => {
+      const mainTimeline = gsap.timeline();
+
+      const bbox = trigger.getBoundingClientRect();
+      const centerX = bbox.left + bbox.width / 2;
+      const centerY = bbox.top + bbox.height / 2;
+      const zoomButton = document.getElementById("zoom-button");
+      // Додати CSS для оптимізації анімацій
+      background.style.willChange = "transform";
+
+      // Масштабування фону
+      mainTimeline.to(background, {
+        //       scale: 6,
+        scale: 3,
+        duration: 2.5,
+        ease: "power1.out",
+        //    transformOrigin: `${centerX - 50}px ${centerY - 110}px`,
+        transformOrigin: `${centerX + 350}px ${centerY - 50}px`,
+        force3D: true,
+        smoothOrigin: true,
+        onComplete: () => {
+          // Вимкнення will-change після завершення анімації
+          background.style.willChange = "auto";
+          zoomButton.style.display = "inline-block";
+        },
+      });
+
+      // Зупинка пульсації тригера
+      if (pulseTween) pulseTween.kill();
+
+      // Обертання #first-spinner
+      mainTimeline.to(
+        "#first-spinner",
+        {
+          rotation: 2720,
+          duration: 20,
+          ease: "power2.inOut",
+          yoyo: true,
+          transformOrigin: "50% 64%",
+        },
+        1
+      );
+
+      // Блимання панелей
+      mainTimeline.add(() => {
+        const solarPanels = document.querySelectorAll(".first-solar-panel");
+
+        solarPanels.forEach((panel) => {
+          const blinkDuration = 0.25;
+          const totalDuration = 10;
+          const totalBlinks = totalDuration / blinkDuration;
+
+          const colorTimeline = gsap.timeline({ repeat: 0 });
+
+          for (let i = 0; i < totalBlinks; i++) {
+            colorTimeline.to(panel.querySelectorAll("polygon, path"), {
+              duration: blinkDuration,
+              onStart: () => {
+                panel.querySelectorAll("polygon, path").forEach((element) => {
+                  if (element.classList.contains("cls-270")) {
+                    element.classList.replace("cls-270", "cls-275");
+                  } else if (element.classList.contains("cls-275")) {
+                    element.classList.replace("cls-275", "cls-289");
+                  } else if (element.classList.contains("cls-289")) {
+                    element.classList.replace("cls-289", "cls-270");
+                  }
+                });
+              },
+              ease: "none",
+            });
+          }
+        });
+      }, 12);
+
+      // Анімація #first-arrow руху вправо-вліво
+      mainTimeline.to(
+        "#first-arrow",
+        {
+          x: 5, // Рух вправо на 5px
+          duration: 0.5,
+          ease: "power1.inOut",
+          yoyo: true,
+          repeat: 19, // Постійне повторення
+          onComplete: showInfoBox,
+        },
+        12 // Початок одночасно з панелями
+      );
+
+      // Обертання тригера
+      //     mainTimeline.to(
+      //       "#first-trigger",
+      //       {
+      //         rotation: 3720,
+      //         duration: 8,
+      //         delay: 18,
+      //         ease: "power2.inOut",
+      //         transformOrigin: "50% 50%",
+      //       },
+      //       0
+      //     );
+    });
+  });
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const background = document.getElementById("whole-svg");
+    const zoomButton = document.getElementById("zoom-button");
+
+    const zoomAnimation = () => {
+      // Активуємо will-change перед анімацією
+      background.style.willChange = "transform";
+
+      gsap.to(background, {
+        scale: 1,
+        duration: 2,
+        ease: "power1.in",
+        //       transformOrigin: "50% 50%",
+        onComplete: () => {
+          // Вимкнення will-change після завершення анімації
+          background.style.willChange = "auto";
+          zoomButton.style.display = "none";
+        },
+      });
+    };
+
+    zoomButton.addEventListener("click", zoomAnimation);
+  });
+</script>
+
+<style>
+  #whole-svg {
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+  }
+  .page-header,
+  .site-header {
+    display: none;
+  }
+  #first-trigger {
+    cursor: pointer;
+  }
+  #zoom-button {
+    display: none;
+  }
+</style>
