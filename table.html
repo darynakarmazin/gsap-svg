@@ -1,0 +1,78 @@
+<script>
+  const maxSelection = 10;
+
+  const words = document.querySelectorAll(".basic-table-text");
+  const nextButton1 = document.querySelector(".next-button1");
+  const block2 = document.querySelector(".block-2");
+
+  let selectedWords = JSON.parse(localStorage.getItem("selectedWords")) || [];
+
+  words.forEach((word) => {
+    if (selectedWords.includes(word.innerText)) {
+      word.style.color = "#ae1412";
+      word.style.fontWeight = "bold";
+    }
+  });
+
+  if (selectedWords.length === maxSelection) {
+    nextButton1.style.display = "block";
+  } else {
+    nextButton1.style.display = "none";
+    block2.style.display = "none";
+  }
+
+  words.forEach((word) => {
+    word.addEventListener("click", () => {
+      if (selectedWords.includes(word.innerText)) {
+        word.style.color = "#4a4a4a";
+        word.style.fontWeight = "400";
+        selectedWords = selectedWords.filter((w) => w !== word.innerText);
+      } else {
+        if (selectedWords.length < maxSelection) {
+          word.style.color = "#ae1412";
+          word.style.fontWeight = "bold";
+          selectedWords.push(word.innerText);
+        }
+      }
+
+      localStorage.setItem("selectedWords", JSON.stringify(selectedWords));
+
+      if (selectedWords.length === maxSelection) {
+        nextButton1.style.display = "block";
+      } else {
+        nextButton1.style.display = "none";
+        block2.style.display = "none";
+      }
+    });
+  });
+
+  const selectedWordsContainer = document.querySelector(
+    ".selected-words-container"
+  );
+
+  function updateSelectedWordsDisplay() {
+    selectedWordsContainer.innerHTML = "";
+
+    if (selectedWords.length > 0) {
+      const ul = document.createElement("ul");
+
+      selectedWords.forEach((word) => {
+        const li = document.createElement("li");
+        li.textContent = word;
+        li.classList.add("basic-table-text-2");
+        ul.appendChild(li);
+      });
+
+      selectedWordsContainer.appendChild(ul);
+    }
+  }
+
+  nextButton1.addEventListener("click", () => {
+    updateSelectedWordsDisplay();
+    if (block2.style.display === "flex") {
+      block2.style.display = "none";
+    } else {
+      block2.style.display = "flex";
+    }
+  });
+</script>
