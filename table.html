@@ -32,6 +32,12 @@
         word.style.color = "#4a4a4a";
         word.style.fontWeight = "400";
         selectedWords = selectedWords.filter((w) => w !== word.innerText);
+
+        // Видаляємо слово з другого списку, якщо воно там є
+        let selectedWords2 =
+          JSON.parse(localStorage.getItem("selectedWords2")) || [];
+        selectedWords2 = selectedWords2.filter((w) => w !== word.innerText);
+        localStorage.setItem("selectedWords2", JSON.stringify(selectedWords2));
       } else {
         if (selectedWords.length < maxSelection) {
           word.style.color = "#ae1412";
@@ -45,6 +51,7 @@
       } else {
         nextButton1.style.display = "none";
         block2.style.display = "none";
+        block3.style.display = "none";
       }
     });
   });
@@ -79,11 +86,11 @@
       }
     });
 
-    if (selectedWords.length === maxSelection) {
-      nextButton1.style.display = "block";
+    if (selectedWords2.length === maxSelection2) {
+      nextButton2.style.display = "block";
     } else {
-      nextButton1.style.display = "none";
-      block2.style.display = "none";
+      nextButton2.style.display = "none";
+      block3.style.display = "none";
     }
 
     words2.forEach((word2) => {
@@ -108,14 +115,6 @@
         }
       });
     });
-
-    nextButton2.addEventListener("click", () => {
-      if (block3.style.display === "flex") {
-        block3.style.display = "none";
-      } else {
-        block3.style.display = "flex";
-      }
-    });
   }
 
   nextButton1.addEventListener("click", () => {
@@ -124,6 +123,14 @@
       block2.style.display = "none";
     } else {
       block2.style.display = "flex";
+    }
+  });
+
+  nextButton2.addEventListener("click", () => {
+    if (block3.style.display === "flex") {
+      block3.style.display = "none";
+    } else {
+      block3.style.display = "flex";
     }
   });
 </script>

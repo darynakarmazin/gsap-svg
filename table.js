@@ -6,6 +6,7 @@ const nextButton1 = document.querySelector(".next-button1");
 const block2 = document.querySelector(".block-2");
 const nextButton2 = document.querySelector(".next-button2");
 const block3 = document.querySelector(".block-3");
+const nextButton3 = document.querySelector(".next-button3");
 
 let selectedWords = JSON.parse(localStorage.getItem("selectedWords")) || [];
 
@@ -115,6 +116,30 @@ function updateSelectedWordsDisplay() {
   });
 }
 
+function updateListWordsDisplay() {
+  // Отримуємо масив з localStorage
+  const selectedWords2 =
+    JSON.parse(localStorage.getItem("selectedWords2")) || [];
+
+  // Для кожного значення з selectedWords2
+  selectedWords2.forEach((word, index) => {
+    // Формуємо значення для data-custom-id на основі індексу
+    const customId = `question-${index + 1}-1`;
+    // Знаходимо <div>, що містить потрібний інпут за data-custom-id
+    const inputContainer = document.querySelector(
+      `[data-custom-id="${customId}"]`
+    );
+
+    if (inputContainer) {
+      // Знаходимо <input> всередині цієї <div> і встановлюємо значення
+      const inputElement = inputContainer.querySelector("input[type='text']");
+      if (inputElement) {
+        inputElement.value = word;
+      }
+    }
+  });
+}
+
 nextButton1.addEventListener("click", () => {
   updateSelectedWordsDisplay();
   if (block2.style.display === "flex") {
@@ -125,6 +150,7 @@ nextButton1.addEventListener("click", () => {
 });
 
 nextButton2.addEventListener("click", () => {
+  updateListWordsDisplay();
   if (block3.style.display === "flex") {
     block3.style.display = "none";
   } else {
