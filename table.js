@@ -150,10 +150,43 @@ nextButton1.addEventListener("click", () => {
 });
 
 nextButton2.addEventListener("click", () => {
-  updateListWordsDisplay();
   if (block3.style.display === "flex") {
     block3.style.display = "none";
   } else {
     block3.style.display = "flex";
+  }
+});
+
+// document.addEventListener("submit", (event) => {
+//   if (event.target.classList.contains("brxe-brf-pro-forms")) {
+//     localStorage.removeItem("selectedWords");
+//     localStorage.removeItem("selectedWords2");
+
+//     const words = document.querySelectorAll(".basic-table-text");
+//     words.forEach((word) => {
+//       word.style.color = "#4a4a4a";
+//       word.style.fontWeight = "400";
+//     });
+
+//     block2.style.display = "none";
+//     block3.style.display = "none";
+//   }
+// });
+
+document.addEventListener("submit", (event) => {
+  if (event.target.classList.contains("brxe-brf-pro-forms")) {
+    setTimeout(() => {
+      localStorage.removeItem("selectedWords");
+      localStorage.removeItem("selectedWords2");
+
+      const words = document.querySelectorAll(".basic-table-text");
+      words.forEach((word) => {
+        word.style.color = "#4a4a4a";
+        word.style.fontWeight = "400";
+      });
+
+      block2.style.display = "none";
+      block3.style.display = "none";
+    }, 1000);
   }
 });
